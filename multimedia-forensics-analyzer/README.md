@@ -31,6 +31,9 @@ multimedia-forensics-analyzer/
 ├── requirements.txt
 ├── README.md
 ├── src/
+│   ├──metadata/
+    └──metadata_checks.py
+    └──metadata_extraction.py 
 │   ├── metadata_analysis.py
 │   ├── compression_analysis.py
 │   ├── image_analysis.py
