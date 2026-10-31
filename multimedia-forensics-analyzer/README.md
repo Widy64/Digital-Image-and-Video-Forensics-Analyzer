@@ -31,6 +31,9 @@ multimedia-forensics-analyzer/
 ├── requirements.txt
 ├── README.md
 ├── src/
+│   ├──metadata/
+    └──metadata_checks.py
+    └──metadata_extraction.py 
 │   ├── metadata_analysis.py
 │   ├── compression_analysis.py
 │   ├── image_analysis.py
@@ -96,6 +99,7 @@ Where suitable ground-truth annotations are available, region-level or frame-lev
 
 The project will use Python and relevant multimedia-processing and scientific-computing libraries. Candidate tools include:
 
+- [ExifTool](https://exiftool.org/) and [PyExifTool](https://pypi.org/project/PyExifTool/): Image and video metadata extraction.
 - [FFprobe](https://ffmpeg.org/ffprobe.html): Media metadata inspection.
 - [OpenCV](https://docs.opencv.org/4.x/d6/d00/tutorial_py_root.html): Image processing and video frame handling.
 - [scikit-image](https://scikit-image.org/docs/stable/api/skimage.metrics.html): Image comparison and similarity metrics.
@@ -104,3 +108,45 @@ The project will use Python and relevant multimedia-processing and scientific-co
 - [NIST Public Data Repository](https://data.nist.gov/pdr/lps/ark:/88434/mds2-2410): Additional dataset resource.
 
 The final dependency list will be maintained in `requirements.txt`.
+
+## Setup
+
+### 1. Install ExifTool (required for metadata analysis)
+
+`src/metadata_analysis.py` uses [ExifTool](https://exiftool.org/) to read metadata from both images and videos. The Python package `PyExifTool` is only a wrapper, so the ExifTool program itself must also be installed and on your `PATH`.
+
+**Windows**
+
+1. Download the Windows 64-bit executable (`exiftool-<version>_64.zip`) from [exiftool.org](https://exiftool.org/).
+2. Extract the zip to a permanent location outside the repository, for example `C:\exiftool-13.59_64`. The folder must contain both `exiftool.exe` and the `exiftool_files` folder.
+3. Make sure the program is named exactly `exiftool.exe`. Windows can hide file extensions, so check that it hasn't become `exiftool.exe.exe` or `exiftool(-k).exe`.
+4. Add the **folder** (for example `C:\exiftool-13.59_64`) to your `PATH`: search for *Edit the system environment variables* → **Environment Variables** → select **Path** → **Edit** → **New**. Add the folder path, not the path to `exiftool.exe`.
+5. Close and reopen every terminal and VS Code window so they pick up the new `PATH`.
+
+**macOS:** `brew install exiftool`
+
+**Linux (Debian/Ubuntu):** `sudo apt install libimage-exiftool-perl`
+
+**Check the installation** in a new terminal:
+
+```bash
+exiftool -ver
+```
+
+This should print a version number, such as `13.59`.
+
+> Do not place ExifTool inside the repository folder; it would be committed to Git.
+
+### 2. Install the Python dependencies
+
+```bash
+python -m pip install -U pyexiftool
+```
+
+### 3. Check that Python can reach ExifTool
+
+```bash
+python src/metadata_analysis.py path/to/photo.jpg path/to/video.mp4
+```
+
+Each file should be reported as `image` or `video` with a tag count. An error saying `exiftool.exe is not found` means ExifTool isn't on your `PATH`; recheck step 1.
